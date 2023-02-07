@@ -1,11 +1,9 @@
-package org.example.handlers;
+package org.example.events;
 
 import net.dv8tion.jda.api.entities.*;
-import net.dv8tion.jda.api.entities.channel.concrete.VoiceChannel;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import org.example.handlers.AudioPlayerSendHandler;
 
-public class MessageReceivedEventHandler extends ListenerAdapter {
+public class MessageReceivedEvent extends ListenerAdapter {
     @Override
     public void onMessageReceived(net.dv8tion.jda.api.events.message.MessageReceivedEvent event){
         Message message = event.getMessage();
@@ -13,14 +11,20 @@ public class MessageReceivedEventHandler extends ListenerAdapter {
         User author = message.getAuthor();
         String content = message.getContentRaw();
         Guild guild = event.getGuild();
-        VoiceChannel userChannel=member.getVoiceState().getChannel().asVoiceChannel();
-        if (!event.isFromGuild()) return;
-        if(author.isBot()){
+
+        if (!event.isFromGuild()) {
             return;
         }
-        if(content!="!join"){return;}
-        if(content.equals("!join")){
-
+        if(author.isBot()) {
+            return;
         }
+
+    }
+
+    public Guild getGuildFromMessage(net.dv8tion.jda.api.events.message.MessageReceivedEvent event){
+        Message message = event.getMessage();
+        User author = message.getAuthor();
+        Guild guild = event.getGuild();
+        return guild;
     }
 }
