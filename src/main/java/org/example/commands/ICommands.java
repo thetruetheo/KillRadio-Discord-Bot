@@ -3,7 +3,7 @@ package org.example.commands;
 import java.util.List;
 
 public interface ICommands {
-    void handle();
+    void handle(CommandContext ctx);
 
     String getName();
 
