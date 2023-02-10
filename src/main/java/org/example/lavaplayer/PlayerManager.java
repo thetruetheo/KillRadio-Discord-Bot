@@ -53,11 +53,11 @@ public class PlayerManager {
 
             @Override
             public void loadFailed(FriendlyException e) {
-
+                //
             }
         });
     }
-    private static PlayerManager getInstance(){
+    public static PlayerManager getInstance(){
         if(INSTANCE==null){
             INSTANCE=new PlayerManager();
         }

@@ -1,4 +1,4 @@
-package org.example.commands;
+package org.example.command;
 
 import java.util.List;
 

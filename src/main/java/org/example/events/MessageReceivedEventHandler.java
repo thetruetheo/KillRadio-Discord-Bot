@@ -21,7 +21,7 @@ public class MessageReceivedEventHandler extends ListenerAdapter {
         Guild guild = event.getGuild();
         String prefix = Config.get("PREFIX");
         JDA eventJDA = event.getJDA();
-        Channel txtChannel= event.getChannel();
+        Channel txtChannel= event.getChannel().asTextChannel();
         if (!event.isFromGuild()) {
             return;
         }
@@ -33,7 +33,7 @@ public class MessageReceivedEventHandler extends ListenerAdapter {
         }
 
         if(content.equalsIgnoreCase(prefix+"shutdown")&&author.getId().equals(Config.get("OWNER_ID"))){
-            txtChannel.sendMessage("");
+
             eventJDA.getHttpClient().connectionPool().evictAll();
             eventJDA.getHttpClient().dispatcher().executorService().shutdown();
             eventJDA.shutdown();

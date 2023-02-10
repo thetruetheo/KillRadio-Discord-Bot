@@ -1,10 +1,13 @@
-package org.example.commands;
+package org.example.command;
 
 
 
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.SelfUser;
 import net.dv8tion.jda.api.entities.channel.Channel;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.util.List;
@@ -13,14 +16,18 @@ public class CommandContext{
     private final MessageReceivedEvent event;
     private final List<String> args;
     private final JDA contextJDA;
+    private final Channel channel;
+    private final TextChannel txtChannel;
+    private final Member member;
 
-    private final Channel txtChannel;
 
     public CommandContext(MessageReceivedEvent event, List<String> args) {
         this.event = event;
         this.args = args;
         this.contextJDA=event.getJDA();
-        this.txtChannel=event.getChannel();
+        this.channel=event.getChannel().asTextChannel();
+        this.txtChannel=event.getChannel().asTextChannel();
+        this.member=event.getMember();
     }
 
 
@@ -41,7 +48,13 @@ public class CommandContext{
     }
 
     public Channel getChannel() {
+        return channel;
+    }
+    public TextChannel getTxtChannel(){
         return txtChannel;
     }
 
+    public Member getMember() {
+        return member;
+    }
 }

@@ -1,8 +1,11 @@
 package org.example;
 
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import org.example.commands.CommandContext;
-import org.example.commands.ICommands;
+import org.example.command.CommandContext;
+import org.example.command.ICommands;
+import org.example.command.commands.PingCommand;
+import org.example.command.commands.music.JoinCommand;
+import org.example.command.commands.music.PlayCommand;
 import org.jetbrains.annotations.Nullable;
 
 
@@ -13,6 +16,11 @@ import java.util.regex.Pattern;
 
 public class CommandManager {
     private final List<ICommands> commands = new ArrayList<>();
+    public CommandManager(){
+        addCommand(new PingCommand());
+        addCommand(new JoinCommand());
+        addCommand(new PlayCommand());
+    }
 
     private void addCommand(ICommands cmd){
         boolean nameFound = this.commands.stream().anyMatch((it)->it.getName().equalsIgnoreCase(cmd.getName()));
