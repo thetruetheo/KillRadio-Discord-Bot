@@ -3,6 +3,8 @@ package org.example.command.commands.music;
 import net.dv8tion.jda.api.entities.GuildVoiceState;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import net.dv8tion.jda.api.entities.channel.concrete.VoiceChannel;
+import net.dv8tion.jda.api.entities.channel.middleman.AudioChannel;
 import org.example.command.CommandContext;
 import org.example.command.ICommands;
 import org.example.lavaplayer.PlayerManager;
@@ -11,6 +13,7 @@ import org.w3c.dom.Text;
 public class PlayCommand implements ICommands {
     @Override
     public void handle(CommandContext ctx) {
+        final AudioChannel voiceChannel=ctx.getAudioChannel();
         final TextChannel channel = ctx.getTxtChannel();
         final Member self = ctx.getGuild().getSelfMember();
         final GuildVoiceState selfVoiceState=self.getVoiceState();
@@ -29,7 +32,7 @@ public class PlayCommand implements ICommands {
             return;
         }
 
-        PlayerManager.getInstance().loadAndPlay(channel,"https://youtu.be/vBjzAdpZzf0");
+        PlayerManager.getInstance().loadAndPlay(channel,"https://youtu.be/vBjzAdpZzf0",ctx.getGuild().getAudioManager(), voiceChannel);
 
 
 

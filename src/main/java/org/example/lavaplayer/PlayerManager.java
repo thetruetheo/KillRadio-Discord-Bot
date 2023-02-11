@@ -9,6 +9,9 @@ import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import net.dv8tion.jda.api.entities.channel.middleman.AudioChannel;
+import net.dv8tion.jda.api.managers.AudioManager;
+import org.example.command.CommandContext;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -32,8 +35,9 @@ public class PlayerManager {
           return guildMusicManager;
         });
     }
-    public void loadAndPlay(TextChannel channel, String trackurl){
+    public void loadAndPlay(TextChannel channel, String trackurl, AudioManager audioManager,AudioChannel audioChannel){
         final GuildMusicManager musicManager = this.getMusicManager(channel.getGuild());
+        audioManager.openAudioConnection(audioChannel);
         this.audioPlayerManager.loadItemOrdered(musicManager, trackurl, new AudioLoadResultHandler() {
             @Override
             public void trackLoaded(AudioTrack track) {
