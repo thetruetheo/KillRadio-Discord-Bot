@@ -6,23 +6,14 @@ import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.entities.channel.middleman.AudioChannel;
 import org.example.command.CommandContext;
 import org.example.command.ICommands;
+import org.example.lavaplayer.GuildMusicManager;
 import org.example.lavaplayer.PlayerManager;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-
-public class PlayCommand implements ICommands {
+public class StopCommand implements ICommands {
     @Override
     public void handle(CommandContext ctx) {
-
         final AudioChannel voiceChannel=ctx.getAudioChannel();
         final TextChannel channel = ctx.getTxtChannel();
-
-        if(ctx.getArgs().isEmpty()){
-            channel.sendMessage("Correct usage is \'!!play <youtube link>\'").queue();
-            return;
-        }
-
         final Member self = ctx.getGuild().getSelfMember();
         final GuildVoiceState selfVoiceState=self.getVoiceState();
 
@@ -41,28 +32,15 @@ public class PlayCommand implements ICommands {
             return;
         }
 
-        String link=String.join(" ", ctx.getArgs());
-        if(!isUrl(link)){
-            link="ytsearch:" + link;
-        }
+        final GuildMusicManager musicManager = PlayerManager.getInstance().getMusicManager(ctx.getGuild());
+        musicManager.scheduler.player.stopTrack();
+        musicManager.scheduler.queue.clear();
 
-        PlayerManager.getInstance().loadAndPlay(channel,link,ctx.getGuild().getAudioManager(), voiceChannel);
-
-
-
+        channel.sendMessage("The player has been stopped and the queue has been cleared").queue();
     }
 
     @Override
     public String getName() {
-        return "play";
-    }
-
-    private boolean isUrl(String url){
-        try{
-            new URI(url);
-            return true;
-        }catch(URISyntaxException e){
-            return false;
-        }
+        return "stop";
     }
 }

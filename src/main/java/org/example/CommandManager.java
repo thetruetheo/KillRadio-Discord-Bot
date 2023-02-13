@@ -4,8 +4,7 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import org.example.command.CommandContext;
 import org.example.command.ICommands;
 import org.example.command.commands.PingCommand;
-import org.example.command.commands.music.JoinCommand;
-import org.example.command.commands.music.PlayCommand;
+import org.example.command.commands.music.*;
 import org.jetbrains.annotations.Nullable;
 
 
@@ -20,6 +19,9 @@ public class CommandManager {
         addCommand(new PingCommand());
         addCommand(new JoinCommand());
         addCommand(new PlayCommand());
+        addCommand(new StopCommand());
+        addCommand(new SkipCommand());
+        addCommand(new NowPlayingCommand());
     }
 
     private void addCommand(ICommands cmd){

@@ -9,8 +9,8 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingDeque;
 
 public class TrackScheduler extends AudioEventAdapter {
-    private final AudioPlayer player;
-    private final BlockingQueue<AudioTrack> queue;
+    public final AudioPlayer player;
+    public final BlockingQueue<AudioTrack> queue;
     public TrackScheduler(AudioPlayer player){
         this.player=player;
         this.queue=new LinkedBlockingDeque<>();
