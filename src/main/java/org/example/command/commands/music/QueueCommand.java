@@ -32,7 +32,7 @@ public class QueueCommand implements ICommands {
             final AudioTrack track = trackList.get(i);
             final AudioTrackInfo info = track.getInfo();
 
-            /*messageAction.addContent("#")
+            messageAction.addContent("#")
                     .addContent(String.valueOf(i+1))
                     .addContent(" '")
                     .addContent(info.title)
@@ -40,7 +40,7 @@ public class QueueCommand implements ICommands {
                     .addContent(info.author)
                     .addContent("' ['")
                     .addContent(formatTime(track.getDuration()))
-                    .addContent("']\n");*/
+                    .addContent("']\n");
         }
         if(trackList.size()>trackCount){
             messageAction.addContent("And '")
@@ -50,15 +50,15 @@ public class QueueCommand implements ICommands {
         messageAction.queue();
     }
 
-    /*
-    private String formatTime(long duration){
+
+    private String formatTime(long timeInMillis){
         final long hours = timeInMillis/TimeUnit.HOURS.toMillis(1);
         final long minutes = timeInMillis/TimeUnit.MINUTES.toMillis(1);
         final long seconds = timeInMillis%TimeUnit.MINUTES.toMillis(1)/ TimeUnit.SECONDS.toMillis(1);
 
         return String.format("%02d:%02d:%02d",hours,minutes,seconds);
     }
-    */
+
 
     @Override
     public String getName() {
