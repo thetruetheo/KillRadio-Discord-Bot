@@ -20,6 +20,7 @@ public class CommandContext{
     private final JDA contextJDA;
     private final Channel channel;
     private final TextChannel txtChannel;
+    private final long txtChannelId;
     private final AudioChannel audioChannel;
     private final Member member;
     private final User author;
@@ -34,6 +35,7 @@ public class CommandContext{
         this.member=event.getMember();
         this.audioChannel=event.getMember().getVoiceState().getChannel().asVoiceChannel();
         this.author=event.getMessage().getAuthor();
+        this.txtChannelId=event.getChannel().getIdLong();
     }
 
 
@@ -66,5 +68,9 @@ public class CommandContext{
 
     public AudioChannel getAudioChannel() {
         return audioChannel;
+    }
+
+    public long getTxtChannelId() {
+        return txtChannelId;
     }
 }
