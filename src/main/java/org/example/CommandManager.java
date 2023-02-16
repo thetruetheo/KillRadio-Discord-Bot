@@ -3,8 +3,6 @@ package org.example;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import org.example.command.CommandContext;
 import org.example.command.ICommands;
-import org.example.command.commands.EmbedsTestCommand;
-import org.example.command.commands.PingCommand;
 import org.example.command.commands.music.*;
 import org.jetbrains.annotations.Nullable;
 
@@ -17,7 +15,6 @@ import java.util.regex.Pattern;
 public class CommandManager {
     private final List<ICommands> commands = new ArrayList<>();
     public CommandManager(){
-        addCommand(new PingCommand());
         addCommand(new JoinCommand());
         addCommand(new PlayCommand());
         addCommand(new StopCommand());
@@ -26,7 +23,6 @@ public class CommandManager {
         addCommand(new QueueCommand());
         addCommand(new RepeatCommand());
         addCommand(new LeaveCommand());
-        addCommand(new EmbedsTestCommand());
     }
 
     private void addCommand(ICommands cmd){

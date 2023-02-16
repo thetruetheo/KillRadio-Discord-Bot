@@ -1,5 +1,6 @@
 package org.example.command.commands.music;
 
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.GuildVoiceState;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
@@ -15,11 +16,15 @@ public class PlayCommand implements ICommands {
     @Override
     public void handle(CommandContext ctx) {
 
-        final AudioChannel voiceChannel=ctx.getAudioChannel();
+
         final TextChannel channel = ctx.getTxtChannel();
 
         if(ctx.getArgs().isEmpty()){
-            channel.sendMessage("Correct usage is \'!!play <youtube link>\'").queue();
+            EmbedBuilder embedBuilder = new EmbedBuilder();
+            embedBuilder.setTitle("ERROR")
+                    .setDescription("Correct usage is \'!!play <youtube link>\'");
+            channel.sendMessageEmbeds(embedBuilder.build()).queue();
+
             return;
         }
 
@@ -27,17 +32,26 @@ public class PlayCommand implements ICommands {
         final GuildVoiceState selfVoiceState=self.getVoiceState();
 
         if(!selfVoiceState.inAudioChannel()){
-            channel.sendMessage("I need to be in a voice channel for this command to work").queue();
+            EmbedBuilder embedBuilder = new EmbedBuilder();
+            embedBuilder.setTitle("ERROR")
+                    .setDescription("I need to be in a voice channel for this command to work");
+            channel.sendMessageEmbeds(embedBuilder.build()).queue();
             return;
         }
         final Member member = ctx.getMember();
         final GuildVoiceState memberVoiceState=member.getVoiceState();
-        if(!memberVoiceState.inAudioChannel()){
-            channel.sendMessage("You need to be in a voice channel for this command to work").queue();
+        if(!member.getVoiceState().inAudioChannel()){
+            EmbedBuilder embedBuilder = new EmbedBuilder();
+            embedBuilder.setTitle("ERROR")
+                    .setDescription("You need to be in a voice channel for this command to work");
+            channel.sendMessageEmbeds(embedBuilder.build()).queue();
             return;
         }
         if(!memberVoiceState.getChannel().equals(selfVoiceState.getChannel())){
-            channel.sendMessage("You need to be in the same voice channel as me for this command to work").queue();
+            EmbedBuilder embedBuilder = new EmbedBuilder();
+            embedBuilder.setTitle("ERROR")
+                    .setDescription("You need to be in the same voice channel as me for this command to work");
+            channel.sendMessageEmbeds(embedBuilder.build()).queue();
             return;
         }
 
@@ -45,14 +59,16 @@ public class PlayCommand implements ICommands {
         if(!isUrl(link)){
             link="ytsearch:" + link;
         }
-
+        /*
         try{
-            PlayerManager.getInstance().loadAndPlay(channel,link,ctx.getGuild().getAudioManager(), voiceChannel);
+            PlayerManager.getInstance().loadAndPlay(channel,link,ctx.getGuild().getAudioManager());
         }
         catch(NullPointerException e){
             channel.sendMessage("Please, give me a link to the track or a search prompt").queue();
         }
-        //PlayerManager.getInstance().loadAndPlay(channel,link,ctx.getGuild().getAudioManager(), voiceChannel);
+        */
+
+        PlayerManager.getInstance().loadAndPlay(channel,link,ctx.getGuild().getAudioManager(), member.getVoiceState().getChannel().asVoiceChannel());
 
 
 

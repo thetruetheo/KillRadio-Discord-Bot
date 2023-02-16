@@ -3,10 +3,7 @@ package org.example.command;
 
 
 import net.dv8tion.jda.api.JDA;
-import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.SelfUser;
-import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.entities.channel.Channel;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.entities.channel.middleman.AudioChannel;
@@ -21,9 +18,10 @@ public class CommandContext{
     private final Channel channel;
     private final TextChannel txtChannel;
     private final long txtChannelId;
-    private final AudioChannel audioChannel;
+
     private final Member member;
     private final User author;
+    private final GuildVoiceState memberVoiceState;
 
 
     public CommandContext(MessageReceivedEvent event, List<String> args) {
@@ -33,9 +31,9 @@ public class CommandContext{
         this.channel=event.getChannel().asTextChannel();
         this.txtChannel=event.getChannel().asTextChannel();
         this.member=event.getMember();
-        this.audioChannel=event.getMember().getVoiceState().getChannel().asVoiceChannel();
         this.author=event.getMessage().getAuthor();
         this.txtChannelId=event.getChannel().getIdLong();
+        this.memberVoiceState=event.getMember().getVoiceState();
     }
 
 
@@ -66,11 +64,16 @@ public class CommandContext{
         return member;
     }
 
-    public AudioChannel getAudioChannel() {
-        return audioChannel;
-    }
+
 
     public long getTxtChannelId() {
         return txtChannelId;
+    }
+
+    public GuildVoiceState getMemberVoiceState() {
+        if(memberVoiceState!=null){
+            return memberVoiceState;
+        }
+        return null;
     }
 }

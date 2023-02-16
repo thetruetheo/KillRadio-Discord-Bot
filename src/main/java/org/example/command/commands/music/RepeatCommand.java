@@ -12,7 +12,7 @@ import org.example.lavaplayer.PlayerManager;
 public class RepeatCommand implements ICommands {
     @Override
     public void handle(CommandContext ctx) {
-        final AudioChannel voiceChannel=ctx.getAudioChannel();
+
         final TextChannel channel = ctx.getTxtChannel();
         final Member self = ctx.getGuild().getSelfMember();
         final GuildVoiceState selfVoiceState=self.getVoiceState();

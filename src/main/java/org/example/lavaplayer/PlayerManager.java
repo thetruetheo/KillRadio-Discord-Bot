@@ -7,6 +7,7 @@ import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.entities.channel.middleman.AudioChannel;
@@ -43,13 +44,22 @@ public class PlayerManager {
             @Override
             public void trackLoaded(AudioTrack track) {
                 musicManager.scheduler.queue(track);
-                channel.sendMessage("Adding to queue: \n"+track.getInfo().title+"\nBy"+track.getInfo().author).queue();
+                EmbedBuilder embedBuilder = new EmbedBuilder();
+                embedBuilder.setTitle("\uD83C\uDFB5Adding track")
+                        .addField("Name: ",track.getInfo().title,true)
+                        .addField("by: ",track.getInfo().author,true);
+                channel.sendMessageEmbeds(embedBuilder.build()).queue();
+
             }
 
             @Override
             public void playlistLoaded(AudioPlaylist playlist) {
                 final List<AudioTrack> tracks = playlist.getTracks();
-                channel.sendMessage("Adding to queue: \n"+String.valueOf(tracks.size())+"\n tracks from playlist \n"+playlist.getName()).queue();
+                EmbedBuilder embedBuilder = new EmbedBuilder();
+                embedBuilder.setTitle("\uD83C\uDFB5Adding to queue")
+                        .addField("Number of tracks: ",String.valueOf(tracks.size()),true)
+                        .addField("From playlist: ",playlist.getName(),true);
+                channel.sendMessageEmbeds(embedBuilder.build()).queue();
                 for(final AudioTrack track : tracks){
                     musicManager.scheduler.queue(track);
                 }

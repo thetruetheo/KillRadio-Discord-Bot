@@ -15,7 +15,7 @@ import org.example.lavaplayer.PlayerManager;
 public class NowPlayingCommand implements ICommands {
     @Override
     public void handle(CommandContext ctx) {
-        final AudioChannel voiceChannel=ctx.getAudioChannel();
+
         final TextChannel channel = ctx.getTxtChannel();
         final Member self = ctx.getGuild().getSelfMember();
         final GuildVoiceState selfVoiceState=self.getVoiceState();
@@ -43,8 +43,8 @@ public class NowPlayingCommand implements ICommands {
             channel.sendMessage("There is no track playing currently").queue();
             return;
         }
-        final AudioTrackInfo info = track.getInfo();
-        channel.sendMessageFormat("Now playing \'$s\' by \'$s\'(Link : <$s>)",info.title,info.author,info.uri).queue();
+        //final AudioTrackInfo info = track.getInfo();
+        channel.sendMessageFormat("Now playing "+track.getInfo().title +" by "+track.getInfo().author+"Link : "+track.getInfo().uri).queue();
     }
 
     @Override

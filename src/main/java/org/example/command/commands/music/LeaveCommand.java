@@ -1,5 +1,6 @@
 package org.example.command.commands.music;
 
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.GuildVoiceState;
 import net.dv8tion.jda.api.entities.Member;
@@ -14,23 +15,34 @@ import org.example.lavaplayer.PlayerManager;
 public class LeaveCommand implements ICommands {
     @Override
     public void handle(CommandContext ctx) {
-        final AudioChannel voiceChannel=ctx.getAudioChannel();
         final TextChannel channel = ctx.getTxtChannel();
         final Member self = ctx.getGuild().getSelfMember();
         final GuildVoiceState selfVoiceState=self.getVoiceState();
 
+
         if(!selfVoiceState.inAudioChannel()){
-            channel.sendMessage("I need to be in a voice channel for this command to work").queue();
+            EmbedBuilder embedBuilder = new EmbedBuilder();
+            embedBuilder.setTitle("ERROR")
+                    .setDescription("I'm not connected to an audio channel");
+            channel.sendMessageEmbeds(embedBuilder.build()).queue();
             return;
         }
+
+
         final Member member = ctx.getMember();
         final GuildVoiceState memberVoiceState=member.getVoiceState();
-        if(!memberVoiceState.inAudioChannel()){
-            channel.sendMessage("You need to be in a voice channel for this command to work").queue();
+        if(!member.getVoiceState().inAudioChannel()){
+            EmbedBuilder embedBuilder = new EmbedBuilder();
+            embedBuilder.setTitle("ERROR")
+                    .setDescription("You need to be in a voice channel for this command to work");
+            channel.sendMessageEmbeds(embedBuilder.build()).queue();
             return;
         }
         if(!memberVoiceState.getChannel().equals(selfVoiceState.getChannel())){
-            channel.sendMessage("You need to be in the same voice channel as me for this command to work").queue();
+            EmbedBuilder embedBuilder = new EmbedBuilder();
+            embedBuilder.setTitle("ERROR")
+                    .setDescription("You need to be in the same voice channel as me for this command to work");
+            channel.sendMessageEmbeds(embedBuilder.build()).queue();
             return;
         }
 
@@ -43,7 +55,10 @@ public class LeaveCommand implements ICommands {
 
         final AudioManager audioManager = ctx.getGuild().getAudioManager();
         audioManager.closeAudioConnection();
-        channel.sendMessage("I have left the voice channel").queue();
+        EmbedBuilder embedBuilder = new EmbedBuilder();
+        embedBuilder.setTitle(":door:Leaving the voice channel");
+        channel.sendMessageEmbeds(embedBuilder.build()).queue();
+
     }
 
     @Override
