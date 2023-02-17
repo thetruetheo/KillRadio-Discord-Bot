@@ -45,8 +45,8 @@ public class MessageReceivedEventHandler extends ListenerAdapter {
             System.out.println("SHUTDOWN");
         }
         if(content.startsWith(prefix)){
-            manager.handle(event);
             event.getMessage().delete().queue();
+            manager.handle(event);
         }
 
 

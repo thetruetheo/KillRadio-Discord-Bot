@@ -12,8 +12,12 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.entities.channel.middleman.AudioChannel;
 import net.dv8tion.jda.api.managers.AudioManager;
+import org.apache.http.client.utils.URLEncodedUtils;
 import org.example.command.CommandContext;
 
+import java.net.URI;
+import java.net.URL;
+import java.security.URIParameter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -44,10 +48,20 @@ public class PlayerManager {
             @Override
             public void trackLoaded(AudioTrack track) {
                 musicManager.scheduler.queue(track);
+                final String youtubeUrl=trackurl;
+                final URI youtubeUri= URI.create(track.getInfo().uri);
+                final String youtubeUriRawQuery = youtubeUri.getRawQuery();
+                final String[] videoIDRaw=youtubeUriRawQuery.split("v=");
+                final String videoID=videoIDRaw[1];
+                final String imageUrl="https://img.youtube.com/vi/"+videoID+"/default.jpg";
+
+                //final String videoID=youtubeUri.getQueryParameter("v");
                 EmbedBuilder embedBuilder = new EmbedBuilder();
-                embedBuilder.setTitle("\uD83C\uDFB5Adding track")
+                embedBuilder.setTitle("\uD83C\uDFB5Adding track:wheelchair:")
                         .addField("Name: ",track.getInfo().title,true)
-                        .addField("by: ",track.getInfo().author,true);
+                        .addField("by: ",track.getInfo().author,true)
+                        .addField("Link : ",track.getInfo().uri,false)
+                        .setThumbnail(imageUrl);
                 channel.sendMessageEmbeds(embedBuilder.build()).queue();
 
             }
@@ -76,6 +90,7 @@ public class PlayerManager {
             }
         });
     }
+
     public static PlayerManager getInstance(){
         if(INSTANCE==null){
             INSTANCE=new PlayerManager();

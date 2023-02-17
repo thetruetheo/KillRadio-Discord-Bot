@@ -3,6 +3,7 @@ package org.example.command.commands.music;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackInfo;
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.GuildVoiceState;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
@@ -21,17 +22,26 @@ public class NowPlayingCommand implements ICommands {
         final GuildVoiceState selfVoiceState=self.getVoiceState();
 
         if(!selfVoiceState.inAudioChannel()){
-            channel.sendMessage("I need to be in a voice channel for this command to work").queue();
+            EmbedBuilder embedBuilder = new EmbedBuilder();
+            embedBuilder.setTitle("ERROR")
+                    .setDescription("I need to be in a voice channel for this command to work");
+            channel.sendMessageEmbeds(embedBuilder.build()).queue();
             return;
         }
         final Member member = ctx.getMember();
         final GuildVoiceState memberVoiceState=member.getVoiceState();
-        if(!memberVoiceState.inAudioChannel()){
-            channel.sendMessage("You need to be in a voice channel for this command to work").queue();
+        if(!member.getVoiceState().inAudioChannel()){
+            EmbedBuilder embedBuilder = new EmbedBuilder();
+            embedBuilder.setTitle("ERROR")
+                    .setDescription("You need to be in a voice channel for this command to work");
+            channel.sendMessageEmbeds(embedBuilder.build()).queue();
             return;
         }
         if(!memberVoiceState.getChannel().equals(selfVoiceState.getChannel())){
-            channel.sendMessage("You need to be in the same voice channel as me for this command to work").queue();
+            EmbedBuilder embedBuilder = new EmbedBuilder();
+            embedBuilder.setTitle("ERROR")
+                    .setDescription("You need to be in the same voice channel as me for this command to work");
+            channel.sendMessageEmbeds(embedBuilder.build()).queue();
             return;
         }
 
@@ -40,11 +50,19 @@ public class NowPlayingCommand implements ICommands {
         final AudioPlayer audioPlayer = musicManager.audioPlayer;
         final AudioTrack track = audioPlayer.getPlayingTrack();
         if(audioPlayer.getPlayingTrack()==null){
-            channel.sendMessage("There is no track playing currently").queue();
+            EmbedBuilder embedBuilder = new EmbedBuilder();
+            embedBuilder.setTitle(":x:There is no track playing currently");
+            channel.sendMessageEmbeds(embedBuilder.build()).queue();
             return;
         }
-        //final AudioTrackInfo info = track.getInfo();
-        channel.sendMessageFormat("Now playing "+track.getInfo().title +" by "+track.getInfo().author+"Link : "+track.getInfo().uri).queue();
+
+        EmbedBuilder embedBuilder = new EmbedBuilder();
+        embedBuilder.setTitle(":notes:Now playing: ")
+                .addField("Title: ", track.getInfo().title,true)
+                .addField("By : ",track.getInfo().author,true)
+                .addField("Link : ",track.getInfo().uri,false);
+        channel.sendMessageEmbeds(embedBuilder.build()).queue();
+        //channel.sendMessageFormat("Now playing "+track.getInfo().title +" by "+track.getInfo().author+"Link : "+track.getInfo().uri).queue();
     }
 
     @Override

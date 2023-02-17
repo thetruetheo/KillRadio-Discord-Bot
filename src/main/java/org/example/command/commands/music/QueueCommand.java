@@ -2,6 +2,8 @@ package org.example.command.commands.music;
 
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackInfo;
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.requests.restaction.MessageCreateAction;
 import org.example.command.CommandContext;
@@ -16,22 +18,28 @@ import java.util.concurrent.TimeUnit;
 
 public class QueueCommand implements ICommands {
     @Override
-    public void handle(CommandContext ctx) {
+    public void handle(CommandContext ctx){
         final TextChannel channel = ctx.getTxtChannel();
         final GuildMusicManager musicManager = PlayerManager.getInstance().getMusicManager(ctx.getGuild());
         final BlockingQueue<AudioTrack> queue = musicManager.scheduler.queue;
 
         if(queue.isEmpty()){
-            channel.sendMessage("The queue is currently empty").queue();
+            EmbedBuilder embedBuilder = new EmbedBuilder();
+            embedBuilder.setTitle(":negative_squared_cross_mark:The queue is currently empty");
+            channel.sendMessageEmbeds(embedBuilder.build()).queue();
             return;
         }
         final int trackCount=Math.min(queue.size(),20);
         final List<AudioTrack> trackList=new ArrayList<>(queue);
-        MessageCreateAction messageAction = channel.sendMessage("**Current Queue:**\n");
+        final EmbedBuilder[] embedBuilders=new EmbedBuilder[trackCount];
+
         for(int i=0;i<trackCount;i++){
             final AudioTrack track = trackList.get(i);
             final AudioTrackInfo info = track.getInfo();
-
+            final EmbedBuilder embedBuilder = new EmbedBuilder();
+            embedBuilders[i]=embedBuilder;
+            embedBuilders[i].setDescription(String.valueOf(i+1)+" '"+info.title+" by "+info.author+"' ['"+formatTime(track.getDuration())+"']\n");
+            /*
             messageAction.addContent("#")
                     .addContent(String.valueOf(i+1))
                     .addContent(" '")
@@ -41,13 +49,24 @@ public class QueueCommand implements ICommands {
                     .addContent("' ['")
                     .addContent(formatTime(track.getDuration()))
                     .addContent("']\n");
+             */
+        }
+
+        for(EmbedBuilder builder : embedBuilders){
+            channel.sendMessageEmbeds(builder.build()).queue();
         }
         if(trackList.size()>trackCount){
+            final EmbedBuilder embedBuilderLast = new EmbedBuilder();
+            embedBuilderLast.setDescription("And '"+String.valueOf(trackList.size()-trackCount)+"' more...");
+            channel.sendMessageEmbeds(embedBuilderLast.build()).queue();
+            /*
             messageAction.addContent("And '")
                     .addContent(String.valueOf(trackList.size()-trackCount))
                     .addContent("' more...");
+
+             */
         }
-        messageAction.queue();
+        //messageAction.queue();
     }
 
 
