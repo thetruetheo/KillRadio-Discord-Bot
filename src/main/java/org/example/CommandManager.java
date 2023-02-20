@@ -3,6 +3,7 @@ package org.example;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import org.example.command.CommandContext;
 import org.example.command.ICommands;
+import org.example.command.commands.MemeCommand;
 import org.example.command.commands.ShutdownCommand;
 import org.example.command.music.*;
 import org.jetbrains.annotations.Nullable;
@@ -25,6 +26,7 @@ public class CommandManager {
         addCommand(new RepeatCommand());
         addCommand(new LeaveCommand());
         addCommand(new ShutdownCommand());
+        addCommand(new MemeCommand());
     }
 
     private void addCommand(ICommands cmd){
