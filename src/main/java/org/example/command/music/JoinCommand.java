@@ -1,4 +1,4 @@
-package org.example.command.commands.music;
+package org.example.command.music;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.GuildVoiceState;

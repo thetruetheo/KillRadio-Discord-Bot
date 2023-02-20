@@ -1,6 +1,5 @@
-package org.example.command.commands.music;
+package org.example.command.music;
 
-import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.GuildVoiceState;
 import net.dv8tion.jda.api.entities.Member;
@@ -11,7 +10,7 @@ import org.example.command.ICommands;
 import org.example.lavaplayer.GuildMusicManager;
 import org.example.lavaplayer.PlayerManager;
 
-public class SkipCommand implements ICommands {
+public class RepeatCommand implements ICommands {
     @Override
     public void handle(CommandContext ctx) {
 
@@ -42,21 +41,17 @@ public class SkipCommand implements ICommands {
 
         final GuildMusicManager musicManager = PlayerManager.getInstance().getMusicManager(ctx.getGuild());
 
-        final AudioPlayer audioPlayer = musicManager.audioPlayer;
-        if(audioPlayer.getPlayingTrack()==null){
-            EmbedBuilder embedBuilder = new EmbedBuilder();
-            embedBuilder.setTitle(":question:There is no track playing currently");
-            channel.sendMessageEmbeds(embedBuilder.build()).queue();
-            return;
-        }
-        musicManager.scheduler.nextTrack();
-        EmbedBuilder embedBuilder = new EmbedBuilder();
-        embedBuilder.setTitle(":fast_forward:Skipped the current track");
+        final boolean newRepeating=!musicManager.scheduler.repeating;
+        musicManager.scheduler.repeating=newRepeating;
+        EmbedBuilder embedBuilder=new EmbedBuilder();
+        embedBuilder.setTitle(":repeat:The player has been set to: ")
+                        .setDescription(newRepeating ? "repeating":"not repeating");
         channel.sendMessageEmbeds(embedBuilder.build()).queue();
+
     }
 
     @Override
     public String getName() {
-        return "skip";
+        return "repeat";
     }
 }

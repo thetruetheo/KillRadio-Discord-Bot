@@ -1,4 +1,4 @@
-package org.example.command.commands.music;
+package org.example.command.music;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.GuildVoiceState;
@@ -7,13 +7,27 @@ import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.entities.channel.middleman.AudioChannel;
 import org.example.command.CommandContext;
 import org.example.command.ICommands;
-import org.example.lavaplayer.GuildMusicManager;
 import org.example.lavaplayer.PlayerManager;
 
-public class StopCommand implements ICommands {
+import java.net.URI;
+import java.net.URISyntaxException;
+
+public class PlayCommand implements ICommands {
     @Override
     public void handle(CommandContext ctx) {
+
+
         final TextChannel channel = ctx.getTxtChannel();
+
+        if(ctx.getArgs().isEmpty()){
+            EmbedBuilder embedBuilder = new EmbedBuilder();
+            embedBuilder.setTitle("ERROR")
+                    .setDescription("Correct usage is \'!!play <youtube link>\'");
+            channel.sendMessageEmbeds(embedBuilder.build()).queue();
+
+            return;
+        }
+
         final Member self = ctx.getGuild().getSelfMember();
         final GuildVoiceState selfVoiceState=self.getVoiceState();
 
@@ -41,19 +55,36 @@ public class StopCommand implements ICommands {
             return;
         }
 
-        final GuildMusicManager musicManager = PlayerManager.getInstance().getMusicManager(ctx.getGuild());
-        musicManager.scheduler.player.stopTrack();
-        musicManager.scheduler.queue.clear();
-        EmbedBuilder embedBuilder = new EmbedBuilder();
-        embedBuilder.setTitle(":stop_button:The player has been stopped")
-                .setDescription("The queue has been cleared");
-        channel.sendMessageEmbeds(embedBuilder.build()).queue();
+        String link=String.join(" ", ctx.getArgs());
+        if(!isUrl(link)){
+            link="ytsearch:" + link;
+        }
+        /*
+        try{
+            PlayerManager.getInstance().loadAndPlay(channel,link,ctx.getGuild().getAudioManager());
+        }
+        catch(NullPointerException e){
+            channel.sendMessage("Please, give me a link to the track or a search prompt").queue();
+        }
+        */
+
+        PlayerManager.getInstance().loadAndPlay(channel,link,ctx.getGuild().getAudioManager(), member.getVoiceState().getChannel().asVoiceChannel());
+
 
 
     }
 
     @Override
     public String getName() {
-        return "stop";
+        return "play";
+    }
+
+    private boolean isUrl(String url){
+        try{
+            new URI(url);
+            return true;
+        }catch(URISyntaxException e){
+            return false;
+        }
     }
 }

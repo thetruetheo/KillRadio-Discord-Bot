@@ -34,16 +34,6 @@ public class MessageReceivedEventHandler extends ListenerAdapter {
             return;
         }
 
-        if(content.equalsIgnoreCase(prefix+"shutdown")&&author.getId().equals(Config.get("OWNER_ID"))){
-            event.getMessage().delete().queue();
-            EmbedBuilder embedBuilder = new EmbedBuilder();
-            embedBuilder.setTitle(":zap:Shutting down");
-            event.getChannel().sendMessageEmbeds(embedBuilder.build()).queue();
-            eventJDA.getHttpClient().connectionPool().evictAll();
-            eventJDA.getHttpClient().dispatcher().executorService().shutdown();
-            eventJDA.shutdown();
-            System.out.println("SHUTDOWN");
-        }
         if(content.startsWith(prefix)){
             event.getMessage().delete().queue();
             manager.handle(event);

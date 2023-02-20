@@ -22,7 +22,7 @@ public class CommandContext{
     private final Member member;
     private final User author;
     private final GuildVoiceState memberVoiceState;
-
+    private final String content;
 
     public CommandContext(MessageReceivedEvent event, List<String> args) {
         this.event = event;
@@ -34,6 +34,7 @@ public class CommandContext{
         this.author=event.getMessage().getAuthor();
         this.txtChannelId=event.getChannel().getIdLong();
         this.memberVoiceState=event.getMember().getVoiceState();
+        this.content=event.getMessage().getContentRaw();
     }
 
 
@@ -75,5 +76,13 @@ public class CommandContext{
             return memberVoiceState;
         }
         return null;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public User getAuthor() {
+        return author;
     }
 }

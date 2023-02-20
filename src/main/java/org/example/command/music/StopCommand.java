@@ -1,34 +1,29 @@
-package org.example.command.commands.music;
+package org.example.command.music;
 
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.GuildVoiceState;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.entities.channel.middleman.AudioChannel;
-import net.dv8tion.jda.api.managers.AudioManager;
 import org.example.command.CommandContext;
 import org.example.command.ICommands;
 import org.example.lavaplayer.GuildMusicManager;
 import org.example.lavaplayer.PlayerManager;
 
-public class LeaveCommand implements ICommands {
+public class StopCommand implements ICommands {
     @Override
     public void handle(CommandContext ctx) {
         final TextChannel channel = ctx.getTxtChannel();
         final Member self = ctx.getGuild().getSelfMember();
         final GuildVoiceState selfVoiceState=self.getVoiceState();
 
-
         if(!selfVoiceState.inAudioChannel()){
             EmbedBuilder embedBuilder = new EmbedBuilder();
             embedBuilder.setTitle("ERROR")
-                    .setDescription("I'm not connected to an audio channel");
+                    .setDescription("I need to be in a voice channel for this command to work");
             channel.sendMessageEmbeds(embedBuilder.build()).queue();
             return;
         }
-
-
         final Member member = ctx.getMember();
         final GuildVoiceState memberVoiceState=member.getVoiceState();
         if(!member.getVoiceState().inAudioChannel()){
@@ -46,23 +41,19 @@ public class LeaveCommand implements ICommands {
             return;
         }
 
-        final Guild guild = ctx.getGuild();
-
-        final GuildMusicManager musicManager = PlayerManager.getInstance().getMusicManager(guild);
-        musicManager.scheduler.repeating=false;
+        final GuildMusicManager musicManager = PlayerManager.getInstance().getMusicManager(ctx.getGuild());
+        musicManager.scheduler.player.stopTrack();
         musicManager.scheduler.queue.clear();
-        musicManager.audioPlayer.stopTrack();
-
-        final AudioManager audioManager = ctx.getGuild().getAudioManager();
-        audioManager.closeAudioConnection();
         EmbedBuilder embedBuilder = new EmbedBuilder();
-        embedBuilder.setTitle(":door:Leaving the voice channel");
+        embedBuilder.setTitle(":stop_button:The player has been stopped")
+                .setDescription("The queue has been cleared");
         channel.sendMessageEmbeds(embedBuilder.build()).queue();
+
 
     }
 
     @Override
     public String getName() {
-        return "leave";
+        return "stop";
     }
 }

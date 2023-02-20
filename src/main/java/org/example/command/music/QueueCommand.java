@@ -1,4 +1,4 @@
-package org.example.command.commands.music;
+package org.example.command.music;
 
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackInfo;
@@ -31,42 +31,22 @@ public class QueueCommand implements ICommands {
         }
         final int trackCount=Math.min(queue.size(),20);
         final List<AudioTrack> trackList=new ArrayList<>(queue);
-        final EmbedBuilder[] embedBuilders=new EmbedBuilder[trackCount];
-
+        final EmbedBuilder embedBuilderQueue=new EmbedBuilder();
+        embedBuilderQueue.setTitle(":scroll:Current queue: ");
         for(int i=0;i<trackCount;i++){
             final AudioTrack track = trackList.get(i);
             final AudioTrackInfo info = track.getInfo();
-            final EmbedBuilder embedBuilder = new EmbedBuilder();
-            embedBuilders[i]=embedBuilder;
-            embedBuilders[i].setDescription(String.valueOf(i+1)+" '"+info.title+" by "+info.author+"' ['"+formatTime(track.getDuration())+"']\n");
-            /*
-            messageAction.addContent("#")
-                    .addContent(String.valueOf(i+1))
-                    .addContent(" '")
-                    .addContent(info.title)
-                    .addContent(" by ")
-                    .addContent(info.author)
-                    .addContent("' ['")
-                    .addContent(formatTime(track.getDuration()))
-                    .addContent("']\n");
-             */
+            embedBuilderQueue.addField("Track № "+String.valueOf(i+1),"'"+info.title+" by "+info.author+" ' ['"+formatTime(track.getDuration())+"']",false);
+
         }
 
-        for(EmbedBuilder builder : embedBuilders){
-            channel.sendMessageEmbeds(builder.build()).queue();
-        }
         if(trackList.size()>trackCount){
-            final EmbedBuilder embedBuilderLast = new EmbedBuilder();
-            embedBuilderLast.setDescription("And '"+String.valueOf(trackList.size()-trackCount)+"' more...");
-            channel.sendMessageEmbeds(embedBuilderLast.build()).queue();
-            /*
-            messageAction.addContent("And '")
-                    .addContent(String.valueOf(trackList.size()-trackCount))
-                    .addContent("' more...");
 
-             */
+            embedBuilderQueue.setFooter("And '"+String.valueOf(trackList.size()-trackCount)+"' more...");
+
         }
-        //messageAction.queue();
+        channel.sendMessageEmbeds(embedBuilderQueue.build()).queue();
+
     }
 
 
