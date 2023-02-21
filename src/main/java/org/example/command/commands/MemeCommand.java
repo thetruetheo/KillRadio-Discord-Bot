@@ -15,21 +15,12 @@ public class MemeCommand implements ICommands {
     public void handle(CommandContext ctx) {
         MessageReceivedEvent event=ctx.getEvent();
         try{
-            Document document = Jsoup.connect("https://www.anekdot.ru/random/anekdot/").get();
-            Elements memes=document.getElementsByClass("text");
+            Document document = Jsoup.connect("https://www.anekdot.ru/random/mem/").get();
+            Elements memes = document.select("img[src$=.jpg]");
             EmbedBuilder embedBuilder=new EmbedBuilder();
             embedBuilder.setTitle(":joy:Top russian memes: ");
-
-            for(int i=0;i< memes.size();i++){
-                if(memes.get(i).childNodeSize()>1024){
-                    i++;
-                    continue;
-                }
-                embedBuilder.addField("Meme № "+String.valueOf(i+1),memes.get(i).text(),false);
-            }
+            embedBuilder.setImage(memes.get(0).absUrl("src"));
             event.getChannel().sendMessageEmbeds(embedBuilder.build()).queue();
-
-
         }
         catch(Exception e){
             e.printStackTrace();
